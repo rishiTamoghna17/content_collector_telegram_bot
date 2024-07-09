@@ -1,0 +1,21 @@
+# Compiled JavaScript
+*.js
+*.jsx
+
+# Build and Coverage
+node_modules/
+coverage/
+dist/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+.sublime-project
+.sublime-workspace
+
+# Local Environment
+.env
+
+# OS specific temporary files
+*.tmp
+*.log

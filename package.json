@@ -1,0 +1,33 @@
+{
+  "name": "terabox-file-downloader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "cheerio": "^1.0.0-rc.12",
+    "child_process": "^1.0.2",
+    "child-process": "^1.0.2",
+    "child-process-promise": "^2.2.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ffmpeg": "^0.0.4",
+    "node-html-parser": "^6.1.13"
+  },
+  "devDependencies": {
+    "@types/child-process-promise": "^2.2.6",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.10",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}
