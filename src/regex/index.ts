@@ -41,3 +41,13 @@ export function checkTeraBoxUrl(url: string) {
     const pattern = /^(https?\:\/\/)?(www\.)?instagram\.com\/.+$/;
     return pattern.test(url);
   }
+
+  export function checkFacebookUrl(url: string) {
+    const patterns = [/^(https?\:\/\/)?(www\.)?fb\.watch\/.+$/, /^(https?\:\/\/)?(www\.)?facebook\.com\/.+$/];
+    for (const pattern of patterns) {
+      if (pattern.test(url)) {
+        return true;
+      }
+    }
+    return false
+  }

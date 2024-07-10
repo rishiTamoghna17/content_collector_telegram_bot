@@ -1,44 +1,34 @@
 import axios from "axios";
-import { parse } from "node-html-parser";
 import cheerio from "cheerio";
+import puppeteer from "puppeteer";
+import qs from "qs";
 
-
-import { IgApiClient } from 'instagram-private-api';
-import puppeteer from 'puppeteer';
-import fs from 'fs';
-import { IG_PASSWORD, IG_USERNAME } from "../../config";
 // const instagramPostLink = "https://www.instagram.com/p/CD5um-vHA33/";
-const getVideoSrc = async(website:any,tab:any)=>{
-try{
-  await tab.goto(website);
-await tab.waitForSelector('video');
-return await tab.evaluate("document.querySelector('video').src");
-}catch(e){
-  console.log(e);
-}
-}
+// const getVideoSrc = async(website:any,tab:any)=>{
+// try{
+//   await tab.goto(website);
+// await tab.waitForSelector('video');
+// return await tab.evaluate("document.querySelector('video').src");
+// }catch(e){
+//   console.log(e);
+// }
+// }
 export async function instagram(url: string) {
   try {
+    // const browser = await puppeteer.launch({
+    //   headless: true,
+    // });
+    // const [tab] = await browser.pages();
 
-    const browser = await puppeteer.launch({
-      headless: true,}); 
-      const [tab] = await browser.pages();
+    // const src = await getVideoSrc(url, tab);
 
-
-   const src = await getVideoSrc(url,tab);
-   var reader = new FileReader();
-reader.onload = function() {
-    alert(reader.result);
-}
-const texts = reader.readAsText(src);
-console.log("src:-",texts);
-// Save the reel to a file
-// fs.writeFileSync('reel.mp4', reelBuffer);
+    let links = await instagramGetUrl(url)
 
 
-
-
-  } catch (e:any) {
+    console.log("src:-", links);
+    // Save the reel to a file
+    // fs.writeFileSync('reel.mp4', reelBuffer);
+  } catch (e: any) {
     console.log("instagram error:-", e);
     return {
       data: `error in instagram function: ${e.message}`,
@@ -48,59 +38,56 @@ console.log("src:-",texts);
   }
 }
 
-// async function getCaptionFromHtml(html: any) {
-//   const root = parse(html);
+const instagramGetUrl = async (url_media: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const BASE_URL = "https://v3.saveig.app/api/ajaxSearch";
+      const params = {
+        q: url_media,
+        t: "media",
+        lang: "en",
+      };
 
-//   let caption = root.querySelector(".Caption")?.text;
-//   if (caption == undefined) caption = "No caption";
+      const headers = {
+        Accept: "*/*",
+        Origin: "https://saveig.app",
+        Referer: "https://saveig.app/",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Sec-Ch-Ua":
+          '"Not/A)Brand";v="99", "Microsoft Edge";v="115", "Chromium";v="115"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.183",
+        "X-Requested-With": "XMLHttpRequest",
+      };
 
-//   caption = caption.replace("view all comments", "");
-//   return caption;
-// }
+      const response = await axios.post(BASE_URL, qs.stringify(params), {
+        headers,
+      });
+      const responseData = response.data.data;
+      if (!responseData) reject({ results_number: 0, url_list: [] });
 
-// function getVideoLinkFromHtml(html: any) {
-//   let crop =
-//     '{"' +
-//     html.substring(html.search("video_url"), html.search("video_url") + 1000);
+      const $ = cheerio.load(responseData);
+      const downloadItems = $(".download-items");
+      const result: any[] = [];
 
-//   crop = crop.substring(0, crop.search(",")) + "}";
+      downloadItems.each((index, element) => {
+        const downloadLink = $(element)
+          .find(".download-items__btn > a")
+          .attr("href");
+        result.push(downloadLink);
+      });
 
-//   return JSON.parse(crop).video_url;
-// }
-
-
-//
-//
-//
-//
-//     url = url + "embed" + "/captioned";
-
-//     const response = await axios.get(url);
-//     const responseData = response.data;
-
-//     if (!responseData) {
-//       throw new Error("No data received from Instagram.");
-//     }
-
-//     const root = parse(responseData);
-// console.log("root:-", root);
-//     let link = "";
-//     if (responseData.search("video_url") !== -1) {
-//       link = getVideoLinkFromHtml(responseData);
-//     } else {
-//       const imgElement = root.querySelector("img.EmbeddedMediaImage");
-//       if (imgElement) {
-//         link = imgElement.getAttribute("src") as any;
-//       } else {
-//         throw new Error("Image element not found in HTML.");
-//       }
-//     }
-
-//     while (link.search("&amp;") !== -1) {
-//       link = link.replace("&amp;", "&");
-//     }
-
-//     const caption = await getCaptionFromHtml(responseData);
-
-//     return { link, caption };
-
+      let igresponse = { results_number: result.length, url_list: result };
+      resolve(igresponse);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

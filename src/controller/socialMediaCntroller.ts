@@ -1,7 +1,7 @@
-import { checkInstaUrl, checkTeraBoxUrl, checkYouTubeUrl } from "../regex";
-import { instagram, terabox, youtube } from "./media";
+import { checkFacebookUrl, checkInstaUrl, checkTeraBoxUrl, checkYouTubeUrl } from "../regex";
+import { instagram, terabox, youtube, facebook } from "./media";
 
-export async function bot(req: any, res: any) {
+export async function socialMediaCntroller(req: any, res: any) {
   try {
     const { link } = req.body;
 
@@ -17,8 +17,11 @@ export async function bot(req: any, res: any) {
       } else if (checkInstaUrl(link)) {
         const results = await instagram(link);
         return res.status(200).send({ status: true, message: results });}
+        else if (checkFacebookUrl(link)) {
+          const results = await facebook(link);
+          return res.status(200).send({ status: true, message: results });}
     else{
-      return res.status(400).send({ status: true, message: "not terabox url" });
+      return res.status(400).send({ status: true, message: "unknown url" });
 
     }
   } catch (error) {
