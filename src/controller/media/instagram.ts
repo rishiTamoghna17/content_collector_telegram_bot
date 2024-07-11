@@ -3,31 +3,12 @@ import cheerio from "cheerio";
 import puppeteer from "puppeteer";
 import qs from "qs";
 
-// const instagramPostLink = "https://www.instagram.com/p/CD5um-vHA33/";
-// const getVideoSrc = async(website:any,tab:any)=>{
-// try{
-//   await tab.goto(website);
-// await tab.waitForSelector('video');
-// return await tab.evaluate("document.querySelector('video').src");
-// }catch(e){
-//   console.log(e);
-// }
-// }
 export async function instagram(url: string) {
   try {
-    // const browser = await puppeteer.launch({
-    //   headless: true,
-    // });
-    // const [tab] = await browser.pages();
-
-    // const src = await getVideoSrc(url, tab);
-
-    let links = await instagramGetUrl(url)
-
+    let links = await instagramGetUrl(url);
 
     console.log("src:-", links);
-    // Save the reel to a file
-    // fs.writeFileSync('reel.mp4', reelBuffer);
+    return { status: 200, data: links };
   } catch (e: any) {
     console.log("instagram error:-", e);
     return {

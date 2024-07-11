@@ -1,46 +1,31 @@
-import { exec } from "child-process-promise";
-import fs from "fs";
-import { FILE_SAVE_PATH } from "../../config";
-import { deleteFile, isFileExist } from "../../utils";
-import path from "path";
-
-const bufferSize = () => {
-  return 1024 * 1024 * 200; // Default 200KB and we set to 1024 * 1024(1MB) * 200 = total 20MB
-};
+import axios from "axios";
 
 export async function youtube(link: string) {
   try {
-    const downloadDir = path.join(FILE_SAVE_PATH, "download");
-    if (!fs.existsSync(downloadDir)) {
-      fs.mkdirSync(downloadDir, { recursive: true });
+    let regex =
+      /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
+    const match = regex.exec(link);
+    if (!match) {
+      console.log("No match found");
+      return { status: 400, data: "Invalid video link format" };
     }
 
-    const filePath = path.join(downloadDir, `${new Date().getTime()}.mp4`);
+    const videoId = match[3];
+    console.log("videoId-->>", videoId);
+    const options = {
+      method: "GET",
+      url: "https://yt-api.p.rapidapi.com/dl",
+      params: { id: videoId },
+      headers: {
+        "x-rapidapi-key": "4f389f0de8msh8d2ab355afa56f0p1dd943jsna2f3f4340c1b",
+        "x-rapidapi-host": "yt-api.p.rapidapi.com",
+      },
+    };
+    const response = await axios.request(options);
+    console.log(response.data);
 
-    const consoleLogFile = `${filePath}.console`;
-    const command = `LC_ALL=en_US.UTF-8 yt-dlp --no-mtime --concurrent-fragments 2 --no-cache-dir -f "bestvideo[ext=mp4][vcodec*=avc]+bestaudio[ext=m4a]/best[ext=mp4]/best" -o "${filePath}" ${link} >> "${consoleLogFile}"`;
-    console.log("command:-", command);
-
-    await exec(command);
-
-    const ytdlpConsoleLogs = fs.readFileSync(consoleLogFile, "utf8");
-    console.log({ ytdlpConsoleLogs });
-
-    await deleteFile(consoleLogFile);
-
-    if (isFileExist(filePath, 1000)) {
-      return {
-        data: `File successfully downloaded!`,
-        success: true,
-        statusCode: 200,
-      };
-    } else {
-      return { data: `File not exist`, success: false, statusCode: 400 };
-    }
+    return { status: 200, data: response.data.adaptiveFormats };
   } catch (error) {
-    if (error as { stderr: string }) {
-      console.error(`stderr: ${error as { stderr: string }}`);
-    }
     console.log("error in youtube function:-", error);
     return {
       data: `error in youtube function`,
