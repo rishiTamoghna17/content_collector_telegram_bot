@@ -1,4 +1,5 @@
 import axios from "axios";
+import { X_RAPID_API_KEY_YOUTUBE } from "../../config";
 
 export async function youtube(link: string) {
   try {
@@ -17,14 +18,14 @@ export async function youtube(link: string) {
       url: "https://yt-api.p.rapidapi.com/dl",
       params: { id: videoId },
       headers: {
-        "x-rapidapi-key": "4f389f0de8msh8d2ab355afa56f0p1dd943jsna2f3f4340c1b",
+        "x-rapidapi-key": X_RAPID_API_KEY_YOUTUBE,
         "x-rapidapi-host": "yt-api.p.rapidapi.com",
       },
     };
     const response = await axios.request(options);
-    console.log(response.data);
+    console.log("yt response------->>>", response.data.adaptiveFormats);
 
-    return { status: 200, data: response.data.adaptiveFormats };
+    return { status: 200, data: response.data.adaptiveFormats.slice(0, 6) };
   } catch (error) {
     console.log("error in youtube function:-", error);
     return {
