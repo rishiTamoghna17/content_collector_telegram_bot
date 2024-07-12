@@ -37,7 +37,7 @@ bot.on("message", async (ctx: Context) => {
 
     const messageText = ctx.message.text;
     console.log("messageText-->>", messageText);
-
+    await ctx.reply("Processing... Please wait.");
     const details = await socialMediaCntroller(messageText);
     console.log("details", JSON.stringify(details, null, 2));
 

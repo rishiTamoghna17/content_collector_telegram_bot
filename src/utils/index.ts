@@ -1,5 +1,6 @@
-import fs from "fs";
+import fs, { createReadStream, readFileSync } from "fs";
 import fsPromises from "fs/promises";
+import path from "path";
 export const deleteFile = async (filePath: string) => {
   try {
     if (fs.existsSync(filePath)) {
@@ -34,14 +35,20 @@ export const isFileExist = (
 };
 
 export const sendFile = async (item: any, ctx: any) => {
-  if (item) {
-    try {
-      // await ctx.replyWithDocument(item);
-      await ctx.reply(JSON.stringify(item, null, 2)); // await ctx.replyWithPhoto(item);
-    } catch (e: any) {
-      ctx.replyWithMarkdown(
-        `⚠️ ${e.message}\n\n👉 Try manually downloading from [here](${item})\n\n👉 *Maybe This File Is Too Large Or Cannot Accessible From Terabox*`
-      );
-    }
+  try {
+    // await ctx.replyWithDocument(item);
+    if (item && item.message === "youtube") {
+      console.log("item-->>", item.data);
+      const videoPath = path.resolve(item.data.data);
+      console.log("videoPath-->>", videoPath);
+
+      const videoStream = createReadStream(videoPath);
+      await ctx.replyWithVideo({ source: videoStream });
+      await deleteFile(item.data.data);
+    } else  await ctx.reply(JSON.stringify(item, null, 2));
+  } catch (e: any) {
+    ctx.replyWithMarkdown(
+      `⚠️ ${e.message}\n\n👉 Try manually downloading from [here](${item})\n\n👉 *Maybe This File Is Too Large Or Cannot Accessible From Terabox*`
+    );
   }
 };
