@@ -42,7 +42,10 @@ Welcome to *content collector Bot* ! This Telegram bot allows you to download an
     ```bash
     npm start
     ```
+## **Additional Information:**
 
+- **Bot Link:**
+  - Telegram Username: [Content Collector](https://t.me/Contentcontrollers_bot)
 ## Usage
 
 1. **Start the bot:**
