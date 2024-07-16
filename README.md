@@ -1,6 +1,6 @@
 # content collector Bot 🚀
 
-![Logo]("https://www.searchenginejournal.com/wp-content/uploads/2020/06/47e5b89a-2b1c-4dcd-a9a8-5db0118157cb-5efbf892d137a.jpeg")
+![Logo](https://www.searchenginejournal.com/wp-content/uploads/2020/06/47e5b89a-2b1c-4dcd-a9a8-5db0118157cb-5efbf892d137a.jpeg)
 
 ## Description
 Welcome to *content collector Bot* ! This Telegram bot allows you to download and stream media from various social media platforms and TeraBox. With this bot, you can easily get direct download or streaming links for Instagram reels, videos, and pictures, Facebook reels, videos, and pictures, YouTube shorts and videos, and TeraBox files.
