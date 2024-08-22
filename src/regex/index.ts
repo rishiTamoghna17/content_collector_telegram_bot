@@ -21,6 +21,7 @@ export function checkTeraBoxUrl(url: string) {
     /tibibox\.com/,
     /www\.tibibox\.com/,
     /www\.teraboxapp\.com/,
+    /teraboxlink\.com/
   ];
 
   for (const pattern of patterns) {
